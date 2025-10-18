@@ -1,0 +1,208 @@
+INICIO
+
+DECLARAR listas:
+    nombres ← lista vacía
+    notas ← lista vacía
+    historial_cambios ← lista vacía
+
+FUNCION registrar_curso()
+    LEER nombre del curso
+    SI nombre está en nombres ENTONCES
+        MOSTRAR "Este curso ya se ha registrado"
+        RETORNAR
+    FIN SI
+    LEER nota
+    SI nota >= 0 Y nota <= 100 ENTONCES
+        AGREGAR nombre a nombres
+        AGREGAR nota a notas
+        AGREGAR "Se registró el curso 'nombre' con nota nota" a historial_cambios
+        MOSTRAR "El curso se registró con éxito"
+    SINO
+        MOSTRAR "La nota debe estar entre 0 y 100"
+    FIN SI
+FIN FUNCION
+
+FUNCION mostrar_cursos()
+    SI nombres está vacío ENTONCES
+        MOSTRAR "No hay cursos registrados"
+    SINO
+        PARA i desde 0 HASTA longitud(nombres)-1 HACER
+            MOSTRAR i+1, nombres[i], notas[i]
+        FIN PARA
+    FIN SI
+FIN FUNCION
+
+FUNCION calcular_promedio()
+    SI notas está vacío ENTONCES
+        MOSTRAR "No se han registrado cursos"
+    SINO
+        promedio ← SUMA(notas) / LONGITUD(notas)
+        MOSTRAR "Promedio general:", promedio
+    FIN SI
+FIN FUNCION
+
+FUNCION contar_aprobados_reprobados()
+    aprobados ← 0
+    reprobados ← 0
+    PARA cada nota EN notas HACER
+        SI nota >= 60 ENTONCES
+            aprobados ← aprobados + 1
+        SINO
+            reprobados ← reprobados + 1
+        FIN SI
+    FIN PARA
+    MOSTRAR "Cursos aprobados:", aprobados
+    MOSTRAR "Cursos reprobados:", reprobados
+FIN FUNCION
+
+FUNCION buscar_curso_lineal()
+    LEER nombre a buscar
+    PARA i desde 0 HASTA longitud(nombres)-1 HACER
+        SI nombre está contenido en nombres[i] ENTONCES
+            MOSTRAR "Curso encontrado:", nombres[i], notas[i]
+            RETORNAR
+        FIN SI
+    FIN PARA
+    MOSTRAR "Curso no encontrado"
+FIN FUNCION
+
+FUNCION actualizar_nota()
+    LEER nombre del curso
+    SI nombre está en nombres ENTONCES
+        LEER nueva_nota
+        SI nueva_nota >= 0 Y nueva_nota <= 100 ENTONCES
+            indice ← POSICIÓN(nombre) EN nombres
+            notas[indice] ← nueva_nota
+            AGREGAR "Se actualizó la nota de 'nombre' a nueva_nota" a historial_cambios
+            MOSTRAR "Nota actualizada correctamente"
+        FIN SI
+    SINO
+        MOSTRAR "No se ha podido encontrar el curso"
+    FIN SI
+FIN FUNCION
+
+FUNCION eliminar_curso()
+    LEER nombre del curso
+    SI nombre está en nombres ENTONCES
+        LEER confirmación
+        SI confirmación = "s" ENTONCES
+            indice ← POSICIÓN(nombre) EN nombres
+            ELIMINAR nombres[indice]
+            ELIMINAR notas[indice]
+            AGREGAR "Se eliminó el curso 'nombre'" a historial_cambios
+            MOSTRAR "Curso eliminado correctamente"
+        SINO
+            MOSTRAR "Operación cancelada"
+        FIN SI
+    SINO
+        MOSTRAR "El curso no existe"
+    FIN SI
+FIN FUNCION
+
+FUNCION ordenar_por_nota()
+    PARA i desde 0 HASTA longitud(notas)-1 HACER
+        PARA j desde 0 HASTA longitud(notas)-i-2 HACER
+            SI notas[j] < notas[j+1] ENTONCES
+                INTERCAMBIAR notas[j] con notas[j+1]
+                INTERCAMBIAR nombres[j] con nombres[j+1]
+            FIN SI
+        FIN PARA
+    FIN PARA
+    MOSTRAR "Cursos ordenados por nota"
+    LLAMAR mostrar_cursos()
+FIN FUNCION
+
+FUNCION ordenar_por_nombre()
+    PARA i desde 1 HASTA longitud(nombres)-1 HACER
+        key_nombre ← nombres[i]
+        key_nota ← notas[i]
+        j ← i - 1
+        MIENTRAS j >= 0 Y nombres[j] > key_nombre HACER
+            nombres[j+1] ← nombres[j]
+            notas[j+1] ← notas[j]
+            j ← j - 1
+        FIN MIENTRAS
+        nombres[j+1] ← key_nombre
+        notas[j+1] ← key_nota
+    FIN PARA
+    MOSTRAR "Cursos ordenados alfabéticamente"
+    LLAMAR mostrar_cursos()
+FIN FUNCION
+
+FUNCION buscar_curso_binario()
+    SI nombres NO ESTÁ ORDENADO ENTONCES
+        MOSTRAR "Primero ordenar por nombre"
+        RETORNAR
+    FIN SI
+    LEER nombre_buscar
+    inicio ← 0
+    fin ← longitud(nombres) - 1
+    MIENTRAS inicio <= fin HACER
+        medio ← (inicio + fin) / 2
+        SI nombres[medio] = nombre_buscar ENTONCES
+            MOSTRAR "Curso encontrado:", nombres[medio], notas[medio]
+            RETORNAR
+        SINO SI nombres[medio] < nombre_buscar ENTONCES
+            inicio ← medio + 1
+        SINO
+            fin ← medio - 1
+        FIN SI
+    FIN MIENTRAS
+    MOSTRAR "Curso no encontrado"
+FIN FUNCION
+
+FUNCION simular_cola_revision()
+    cola ← lista vacía
+    MIENTRAS True HACER
+        LEER curso
+        SI curso = "fin" ENTONCES
+            SALIR DEL BUCLE
+        FIN SI
+        AGREGAR curso a cola
+    FIN MIENTRAS
+    PARA cada curso EN cola HACER
+        MOSTRAR "Revisando:", curso
+    FIN PARA
+FIN FUNCION
+
+FUNCION mostrar_historial()
+    SI historial_cambios está vacío ENTONCES
+        MOSTRAR "No hay cambios registrados"
+    SINO
+        PARA i desde longitud(historial_cambios)-1 HASTA 0 HACER
+            MOSTRAR historial_cambios[i]
+        FIN PARA
+    FIN SI
+FIN FUNCION
+
+FUNCION salir()
+    MOSTRAR "Gracias por usar el Gestor de Notas Académicas. ¡Hasta pronto!"
+    TERMINAR PROGRAMA
+FIN FUNCION
+
+FUNCION menu()
+    MIENTRAS True HACER
+        MOSTRAR menu principal con opciones 1 a 13
+        LEER opcion
+        SEGÚN opcion HACER
+            1 → registrar_curso()
+            2 → mostrar_cursos()
+            3 → calcular_promedio()
+            4 → contar_aprobados_reprobados()
+            5 → buscar_curso_lineal()
+            6 → actualizar_nota()
+            7 → eliminar_curso()
+            8 → ordenar_por_nota()
+            9 → ordenar_por_nombre()
+            10 → buscar_curso_binario()
+            11 → simular_cola_revision()
+            12 → mostrar_historial()
+            13 → salir()
+            OTRO → MOSTRAR "Opción inválida"
+        FIN SEGÚN
+    FIN MIENTRAS
+FIN FUNCION
+
+LLAMAR menu()
+
+FIN
